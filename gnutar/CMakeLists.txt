@@ -142,3 +142,5 @@ add_darling_executable(gnutar ${gnutar_sources})
 install(TARGETS gnutar
 	DESTINATION libexec/darling/usr/bin)
 
+install(FILES ../gnutar.1 DESTINATION libexec/darling/usr/share/man/man1)
+install(FILES ../gnurmt.8 DESTINATION libexec/darling/usr/share/man/man8)
