@@ -11,6 +11,17 @@ add_definitions(-DTARGET_OS_MAC=1)
 add_definitions(-D__APPLE__ -D__DYNAMIC__)
 add_definitions(-DHAVE_CONFIG_H)
 
+# Hide warnings
+add_definitions(
+	-Wno-format-security
+	-Wno-format-extra-args
+	-Wno-string-plus-int
+	-Wno-shift-negative-value
+	-Wno-tautological-compare
+	-Wno-incompatible-pointer-types-discards-qualifiers
+	-Wno-implicit-function-declaration
+)
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_POSIX_C_SOURCE -nostdinc -fPIC")
 set(CMAKE_EXE_LINKER_FLAGS "-nodefaultlibs -nostdlib -Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map")
 
