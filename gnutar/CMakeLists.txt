@@ -6,8 +6,10 @@ if(COMMAND cmake_policy)
 	cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-include(darling_exe)
-add_definitions(-DHAVE_CONFIG_H)
+add_compile_definitions(
+	HAVE_CONFIG_H
+	_FORTIFY_SOURCE=0
+)
 
 # Hide warnings
 add_definitions(
@@ -22,13 +24,17 @@ add_definitions(
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nostdinc -fPIC")
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../gen)
+include_directories(BEFORE
+	${CMAKE_CURRENT_SOURCE_DIR}/../gen/lib
+	${CMAKE_CURRENT_SOURCE_DIR}/lib
+)
 
 include(InstallSymlink)
 set(BINARY_PACKAGING_MODE ON)
 
-set(gnutar_sources
+add_darling_static_library(libgnutar FAT SOURCES
+	lib/__fpending.c
 	lib/allocsa.c
 	lib/argmatch.c
 	lib/argp-ba.c
@@ -46,8 +52,8 @@ set(gnutar_sources
 	lib/basename.c
 	lib/canonicalize-lgpl.c
 	lib/chdir-long.c
-	lib/closeout.c
 	lib/close-stream.c
+	lib/closeout.c
 	lib/creat-safer.c
 	lib/dirname.c
 	lib/dup-safer.c
@@ -56,13 +62,12 @@ set(gnutar_sources
 	lib/exitfail.c
 	lib/fd-safer.c
 	lib/fnmatch.c
-	lib/__fpending.c
 	lib/fstatat.c
 	lib/full-write.c
 	lib/getcwd.c
 	lib/getdate.c
-	lib/getopt1.c
 	lib/getopt.c
+	lib/getopt1.c
 	lib/gettime.c
 	lib/hash.c
 	lib/human.c
@@ -77,9 +82,9 @@ set(gnutar_sources
 	lib/modechange.c
 	lib/obstack.c
 	lib/offtostr.c
+	lib/open-safer.c
 	lib/openat-die.c
 	lib/openat-proc.c
-	lib/open-safer.c
 	lib/paxerror.c
 	lib/paxexit.c
 	lib/paxnames.c
@@ -87,10 +92,9 @@ set(gnutar_sources
 	lib/prepargs.c
 	lib/printf-args.c
 	lib/printf-parse.c
-	lib/quotearg.c
 	lib/quote.c
+	lib/quotearg.c
 	lib/regex.c
-	lib/rpmatch.c
 	lib/rtapelib.c
 	lib/safe-read.c
 	lib/safe-write.c
@@ -106,15 +110,21 @@ set(gnutar_sources
 	lib/unlinkdir.c
 	lib/utimens.c
 	lib/vasnprintf.c
-	lib/version-etc.c
 	lib/version-etc-fsf.c
+	lib/version-etc.c
+	lib/xalloc-die.c
 	lib/xgetcwd.c
 	lib/xmalloc.c
 	lib/xstrndup.c
 	lib/xstrtol.c
 	lib/xstrtoul.c
 	lib/xstrtoumax.c
+)
+set_target_properties(libgnutar PROPERTIES
+	OUTPUT_NAME gnutar
+)
 
+add_darling_executable(gnutar
 	src/buffer.c
 	src/compare.c
 	src/create.c
@@ -131,14 +141,13 @@ set(gnutar_sources
 	src/update.c
 	src/utf8.c
 	src/xheader.c
-
+)
+target_link_libraries(gnutar
+	libgnutar
+	iconv
 )
 
-add_darling_executable(gnutar ${gnutar_sources})
-target_link_libraries(gnutar iconv)
-
-install(TARGETS gnutar
-	DESTINATION libexec/darling/usr/bin)
+install(TARGETS gnutar DESTINATION libexec/darling/usr/bin)
 
 install(FILES ../gnutar.1 DESTINATION libexec/darling/usr/share/man/man1)
 install(FILES ../gnurmt.8 DESTINATION libexec/darling/usr/share/man/man8)
