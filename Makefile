@@ -7,7 +7,7 @@ Project               = gnutar
 UserType              = Administrator
 ToolType              = Commands
 Extra_Configure_Flags = --program-prefix=gnu --includedir=/usr/local/include
-Extra_CC_Flags        = -mdynamic-no-pic
+Extra_CC_Flags        = -mdynamic-no-pic -D_FORTIFY_SOURCE=0
 GnuAfterInstall       = remove-junk install-symlink install-plist
 
 Install_Prefix  = /usr/local
@@ -26,7 +26,7 @@ AEP_ExtractDir = $(AEP_ProjVers)
 AEP_Patches    = Makefile.in.diff tar-1.17-buildfix.diff \
                  EA.diff preallocate.diff quarantine.diff \
                  PR5405409.diff PR5605786.diff PR6450027.diff \
-                 PR7691662.diff
+                 PR7691662.diff PR46500656.diff
 
 ifeq ($(suffix $(AEP_Filename)),.bz2)
 AEP_ExtractOption = j
