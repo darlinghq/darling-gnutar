@@ -31,6 +31,10 @@
 #include <libgen.h>
 #include <sys/queue.h>
 #include <copyfile.h>
+#ifdef DARLING
+// c'mon Apple, really?
+extern
+#endif
 struct copyfile_list_entry_t {
     char *src;
     char *dst;
